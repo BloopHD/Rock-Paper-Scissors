@@ -3,12 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
     <title>Document</title>
 </head>
 <body>
-    <h1>
-        OPEN DEV TOOLS AND USE CONSOLE TO SEE RESULTS!
-    </h1>
+    <div>
+        <h2 id="header">
+            Chose an option!
+        </h2>      
+    </div>
+
+    <div class="button-container">
+        <Button class="rock">
+            ROCK
+        </Button>
+        <Button class="paper">
+            PAPER
+        </Button>
+        <Button class="scissors">
+            SCISSORS
+        </Button>
+    </div>
+
+    <div id="results">
+        Who's going to win?!
+    </div>
+
+    <div id="count">
+        <div class="score">
+            <p>
+                Player Score:
+            </p>
+            <p id="player-count">
+                0
+            </p>
+        </div>
+
+        <div class="score">
+            <p>
+                Computer Score:
+            </p>
+            <p id="computer-count">
+                0
+            </p>
+        </div>
+    </div>
+
+    <div id="again"></div>
+
 </body>
 </html>

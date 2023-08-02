@@ -4,40 +4,42 @@ let gamesPlayed = 0;
 let playerWinCount = 0;
 let computerWinCount = 0;
 
-game();
+setUp();
 
-// const playerSelection = getPlayerChoice();
-// const computerSelection = getComputerChoice();
+// Sets up page's buttons be able to accept player's choices.
+function setUp() {
 
-function game() {
-    while (gamesPlayed < numberGames) {
-        const playerSelection = getPlayerChoice();
-        const computerSelection = getComputerChoice();
+    const rock = document.querySelector('.rock');
+    const paper = document.querySelector(".paper");
+    const scissors = document.querySelector(".scissors");
 
-        let results = playRound(playerSelection, computerSelection);
-
-        if (results == 0) {
-            console.log("Tie!");
-        } else {
-            if (results == 1) {
-                console.log("You win! " + playerSelection + " beats " + computerSelection + "!");
-                playerWinCount++;
-            } else if (results == -1) {
-                console.log("You lose! " + computerSelection + " beats " + playerSelection + "!");
-                computerWinCount++;
-            }
-            gamesPlayed++;
-        }
-    }
-
-    if (playerWinCount > computerWinCount) {
-        console.log("Winner! Score: " + playerWinCount + " to " + computerWinCount);
-    } else if (playerWinCount < computerWinCount) {
-        console.log("Loser! Score: " + computerWinCount + " to " + playerWinCount);
-    }
+    rock.addEventListener('click', play);
+    paper.addEventListener('click', play);
+    scissors.addEventListener('click', play);
 }
 
+// Ends game by disabling choices, and adding reset button.
+function gameOver() {
+
+    const buttons = document.querySelectorAll("button");
+
+    buttons.forEach(button => {
+        button.disabled = true;
+    });
+
+    let againDiv = document.getElementById("again");
+    let againButt = document.createElement("BUTTON");
+    let againText = document.createTextNode("Again?");
+
+    againButt.appendChild(againText);
+    againDiv.appendChild(againButt);
+
+    againButt.addEventListener('click', () => { window.location.reload(); });
+}
+
+// Accepts the player and computers selection and decides who wins.
 function playRound(playerSelection, computerSelection) {
+    
     if (playerSelection == "Rock") {
 
         if (computerSelection == "Rock") {
@@ -77,25 +79,73 @@ function playRound(playerSelection, computerSelection) {
     }
 }
 
+// Returns computer's choice.
 function getComputerChoice() {
 
     return choices[Math.floor(Math.random() * choices.length)];
 }
 
-function getPlayerChoice() {
+// Called when button choice is selected.
+// Plays round and then calls handleResults.
+function play(choice) {
 
-    let choice = prompt("Choose Rock, Paper, or Scissors!");
-    let formattedChoice = formatePlayerChoice(choice);
+    const computerSelection = getComputerChoice();
+    const playerSelection = formatePlayerChoice(choice.target.className);
+    const results  = playRound(playerSelection, computerSelection);
 
-    while (!choices.includes(formattedChoice)) {
-        console.log(choice + " is not a valid input, try again!");
-        choice = prompt("Choose Rock, Paper, or Scissors!");
-        formattedChoice = formatePlayerChoice(choice);
-    }
+    handleResults(results, playerSelection, computerSelection);
 
-    return formattedChoice;
 }
 
+// Handles the rounds results and displays them.
+// Call's gameOver if the number of games won by either the player or computer = number of games to win.
+function handleResults(results, playerSelection, computerSelection) {
+
+    let display = "";
+
+    if (results == 0) {
+
+        display = ("Tie! " + playerSelection + " ties " + computerSelection + "!");
+
+    } else {
+
+        if (results == 1) {
+
+            display = ("You win this round! " + playerSelection + " beats " + computerSelection + "!");
+            playerWinCount++;
+
+        } else if (results == -1) {
+
+            display = ("You lose this round! " + computerSelection + " beats " + playerSelection + "!");
+            computerWinCount++;
+
+        }
+        gamesPlayed++;
+    }
+
+    document.getElementById("results").innerHTML = display;
+    document.getElementById("player-count").innerHTML = playerWinCount;
+    document.getElementById("computer-count").innerHTML = computerWinCount;
+
+    if (playerWinCount >= numberGames || computerWinCount >= numberGames) {
+
+        if (playerWinCount > computerWinCount) {
+
+            document.getElementById("header").innerHTML = "WINNER!";
+            document.getElementById("results").innerHTML =  "You win! " + playerWinCount + " to " + computerWinCount;
+
+        } else if (playerWinCount < computerWinCount) {
+
+            document.getElementById("header").innerHTML = "LOSER!";
+            document.getElementById("results").innerHTML =  "You lose! " + computerWinCount + " to " + playerWinCount;
+
+        }
+
+        gameOver();
+    } 
+}
+
+// Formates the players choice (the button class names), to be aesthetic.
 function formatePlayerChoice(s) {
 
     return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
